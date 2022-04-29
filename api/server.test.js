@@ -2,6 +2,22 @@ const request = require('supertest');
 const server = require('./server');
 const db = require('../data/dbConfig');
 
+beforeAll(async () => {
+  await db.migrate.rollback();  // npx knex migrate:rollback
+  await db.migrate.latest();    // npx knex migrate:latest
+});
+
+beforeEach(async () => {
+  await db('users').truncate();
+  await request(server).post('/api/auth/register')
+    .send({username:'Errol123', password:'abc123'});
+});
+
+afterAll(async () => {
+  await db.destroy();
+});
+
+
 
 
 //Tests Run Without Error
@@ -16,21 +32,6 @@ test('Environment',()=>{
 
 //MVP Req 1 An authentication workflow with npm functionality for account creation and login, implemented inside `api/auth/auth-router.js`.
 //MVP Req 2 Middleware used to restrict access to resources from non-authenticated requests, implemented inside `api/middleware/restricted.js`.
-beforeAll(async () => {
-  await db.migrate.rollback();  // npx knex migrate:rollback
-  await db.migrate.latest();    // npx knex migrate:latest
-});
-
-afterAll(async () => {
-  await db.destroy();
-});
-
-beforeEach(async () => {
-  await db('users').truncate();
-  await request(server).post('/api/auth/register')
-    .send({username:'Errol123', password:'abc123'});
-  await db('users');
-});
 
 //Api
 describe("Functionality for account creation and login, implemented inside `api/auth/auth-router.js`.",()=>{
@@ -88,14 +89,12 @@ describe("Functionality for account creation and login, implemented inside `api/
 describe("Middleware used to restrict access to resources from non-authenticated requests",()=>{
   //Testing restricted middleware
   test('[GET] /api/jokes shows correct message when missing token in authorization header.',async()=>{
-    const res = await (await request(server).get('/api/jokes'))
-    .send({});
-    expect(res.body).toMatchObject({message: 'token required'});
+    const res = await request(server).get('/api/jokes');
+    expect(res.body.message).toBe("token required");
   })
   test('[GET] /api/jokes shows correct message when token is expired or invalid',async()=>{
-    const res = await (await request(server).get('/api/jokes'))
-    .send({token: '2xsdbjabb3sda'});
-    expect(res.body).toMatchObject({message: 'token invalid'});
+    const res = await request(server).get('/api/jokes').set('Authorization', "2dsdcxt3fdsdfs");
+    expect(res.body.message).toBe("token invalid");
   })
 }
 );

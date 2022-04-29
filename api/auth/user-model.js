@@ -7,18 +7,18 @@ async function add(user) {
 
 function find() {
 	return db("users as user")
-		.select("user.id", "user.username");
+		.select("users.id", "users.username");
 }
 
 function findByUsername(username) {
 	return db("users")
 		.where({username})
-		.first("user.id");
+		.first("users.id");
 }
 
 function findById(id) {
     return db("users")
-        .where({id})
+        .where('id', id)
         .first();
 }
 

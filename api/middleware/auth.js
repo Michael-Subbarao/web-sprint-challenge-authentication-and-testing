@@ -1,7 +1,7 @@
-const Users = require('./../../data/dbConfig')
+const Users = require('../../api/auth/user-model')
 
 //middleware for login and register payload validation
-const validate = async (req,res,next) =>{
+const validate = (req,res,next) =>{
     const {username,password} = req.body;
     console.log(username,password);
     if(!username || !password){
@@ -16,14 +16,15 @@ const validate = async (req,res,next) =>{
         next();
     }
 }
+
 const usernameCheck = async (req,res,next) =>{
     try{
-        const compare = await Users.findByUser(req.body.username);
+        const compare = await Users.findByUsername(req.body.username);
         if(!compare){
             next();
         }
         else{
-            next({status:400, message:'Username is Taken'});
+            res.status(400).send({message: 'Username is Taken.'});
         }
     }
     catch(err){

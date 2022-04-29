@@ -16,33 +16,43 @@ function generateToken(user) {
 
 router.post('/register', validate, usernameCheck, (req, res, next) => {
   let user = req.body
-
-  // bcrypting the password before saving
   const hash = bcrypt.hashSync(user.password, 6);
-  // never save the plain text password in the db
   user.password = hash;
 
   Users.add(user)
     .then(saved => {
       res.status(201).json({ message: `Great to have you, ${saved.username}` })
     })
-    .catch(next); // our custom err handling middleware in server.js will trap this
+    .catch(next); 
 })
 
-router.post('/login', validate, (req, res, next) => {
-  let { username, password } = req.body;
-  Users.findBy({ username })
-    .then(([user]) => {
-      if (user && bcrypt.compareSync(password, user.password)) {
-        res.status(200).json({
-          message: `Welcome back ${user.username}...`,
-          token: generateToken(user)
-        })
-      } else {
-        next({ status: 401, message: 'Invalid Credentials' })
-      }
+router.post('/login',  (req, res, next) => {
+//  let { username, password } = req.body;
+//  Users.findBy({ username })
+//    .then(([user]) => {
+//      if (user && bcrypt.compareSync(password, user.password)) {
+//        res.status(200).json({
+//          message: `Welcome, ${user.username}`,
+//          token: generateToken(user)
+//        })
+//      } else {
+//        next({ status: 401, message: 'Username or Password Incorrect' })
+//      }
+//    })
+//    .catch(next)
+  const user = req.user
+  const { password } = req.body
+  const validCreds = bcrypt.compareSync(password, user.password)
+
+  if (validCreds) {
+    res.status(200).json({
+      message: `welcome, ${user.username}`,
+      token: generateToken(user)
     })
-    .catch(next)
+  } else {
+    next({ status: 401, message: 'Username or Password Incorrect' })
+  }
+  
 })
 
 module.exports = router;
