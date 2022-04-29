@@ -26,26 +26,23 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
+  await db('users').truncate();
   await request(server).post('/api/auth/register')
-  .send({username:'Errol123', password:'abc123'})
+    .send({username:'Errol123', password:'abc123'});
+  await db('users');
 });
-
 
 //Api
 describe("Functionality for account creation and login, implemented inside `api/auth/auth-router.js`.",()=>{
-  
-  
-  test('[POST] to the `/api/auth/login` endpoint returns a token',async()=>{
-    const res = await request(server).post('/api/auth/register')
-    .send({username:'Errol123', password:'abc123'});
-    expect(res.body).toHaveProperty('token');
-  })
 
    //Testing /api/auth/register
    test('[POST] to the `/api/auth/register` endpoint creates a new account',async()=>{
     const res = await request(server).post('/api/auth/register')
     .send({username:'USER', password:'PASS'});
-    expect(res.body).toHaveProperty('id');
+    const users = await db('users');
+    expect(res.body.message).toBe('Great to have you, USER');
+    expect(users).toHaveLength(2);
+    
   })
 
    test('[POST] /api/auth/register returns correct error message with no username.',async()=>{
@@ -67,6 +64,12 @@ describe("Functionality for account creation and login, implemented inside `api/
   })
 
   //Testing /api/auth/login
+  test('[POST] /api/auth/login endpoint returns a token',async()=>{
+    const res = await request(server).post('/api/auth/login')
+    .send({username:'Errol123', password:'abc123'});
+    expect(res.body).toHaveProperty('token');
+  })
+
   test('[POST] /api/auth/login returns correct error message with incorrect username.',async()=>{
     const res = await request(server).post('/api/auth/login')
     .send({username:'Errol123', password: 'abc122'});
@@ -94,6 +97,5 @@ describe("Middleware used to restrict access to resources from non-authenticated
     .send({token: '2xsdbjabb3sda'});
     expect(res.body).toMatchObject({message: 'token invalid'});
   })
-
 }
 );
