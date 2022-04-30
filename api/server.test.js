@@ -49,13 +49,13 @@ describe("Functionality for account creation and login, implemented inside `api/
    test('[POST] /api/auth/register returns correct error message with no username.',async()=>{
     const res = await request(server).post('/api/auth/register')
     .send({username:'', password:'PASS'});
-    expect(res.body).toMatchObject({message:'Missing username or password.'});
+    expect(res.body).toMatchObject({message:'username and password required.'});
   })
 
   test('[POST] /api/auth/register returns correct error message with no password.',async()=>{
     const res = await request(server).post('/api/auth/register')
     .send({username:'ADMIN', password:''});
-    expect(res.body).toMatchObject({message:'Missing username or password.'});
+    expect(res.body).toMatchObject({message:'username and password required.'});
   })
 
   //test('[POST] /api/auth/register returns correct error message when password is too short.',async()=>{
@@ -74,13 +74,13 @@ describe("Functionality for account creation and login, implemented inside `api/
   test('[POST] /api/auth/login returns correct error message with incorrect username.',async()=>{
     const res = await request(server).post('/api/auth/login')
     .send({username:'Errol123', password: 'abc122'});
-    expect(res.body).toMatchObject({message: 'Username or Password Incorrect'});
+    expect(res.body).toMatchObject({message: "invalid credentials"});
   })
 
   test('[POST] /api/auth/login returns correct error message with incorrect password.',async()=>{
     const res = await request(server).post('/api/auth/login')
     .send({username:'Errol124', password: 'abc123'});
-    expect(res.body).toMatchObject({message: 'Username or Password Incorrect'});
+    expect(res.body).toMatchObject({message: "invalid credentials"});
   })
 }
 );

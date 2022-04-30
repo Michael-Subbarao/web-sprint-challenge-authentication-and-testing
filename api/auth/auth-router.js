@@ -38,7 +38,7 @@ router.post("/login", validateLogin, userNameExists, async (req, res,next) => {
        });
     }
     else {
-      res.status(401).json({ message:'Username or Password Incorrect'});
+      res.status(401).json({ message:"invalid credentials"});
     }
   }
   catch{

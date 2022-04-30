@@ -4,7 +4,7 @@ const Users = require('../../api/auth/user-model')
 const validate = (req,res,next) =>{
     const {username,password} = req.body;
     if(!username || !password){
-        res.status(400).send({message: 'Missing username or password.'});
+        res.status(400).send({message: 'username and password required.'});
         next();
     }
     else{
@@ -30,7 +30,7 @@ const usernameCheck = async (req,res,next) =>{
 const validateLogin = (req,res,next)=>{
     const {username,password} = req.body;
     if(!username || !password){
-        res.status(400).send({message: 'Username or Password Incorrect'});
+        res.status(400).send({message: "invalid credentials"});
         next();
     }
     next();
@@ -43,7 +43,7 @@ const userNameExists = async (req, res, next) => {
       req.user = user;
       next();
     } else {
-      next({ status: 401, message: 'Username or Password Incorrect'})
+      next({ status: 401, message: "invalid credentials"})
     }
   }
 

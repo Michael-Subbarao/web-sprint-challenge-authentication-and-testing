@@ -10,9 +10,9 @@ You are not allowed to collaborate during the sprint challenge.
 
 ## Project Setup
 
-- [ ] Run `npm install` to install your dependencies.
-- [ ] Build your database executing `npm run migrate`.
-- [ ] Run tests locally executing `npm test`.
+- [X] Run `npm install` to install your dependencies.
+- [X] Build your database executing `npm run migrate`.
+- [X] Run tests locally executing `npm test`.
 
 ## Project Instructions
 
@@ -30,7 +30,7 @@ Your finished project must include all of the following requirements (further in
 
 - [ ] An authentication workflow with functionality for account creation and login, implemented inside `api/auth/auth-router.js`.
 - [ ] Middleware used to restrict access to resources from non-authenticated requests, implemented inside `api/middleware/restricted.js`.
-- [ ] A minimum of 2 tests per API endpoint, written inside `api/server.test.js`.
+- [X] A minimum of 2 tests per API endpoint, written inside `api/server.test.js`.
 
 **IMPORTANT Notes:**
 
