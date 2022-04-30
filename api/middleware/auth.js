@@ -3,11 +3,10 @@ const Users = require('../../api/auth/user-model')
 //middleware for login and register payload validation
 const validate = (req,res,next) =>{
     const {username,password} = req.body;
-    if(!username || !password){
-        res.status(400).send({message: 'username and password required.'});
-    }
-    else{
-        next();
+    if (!username || !password) {
+        next({ status: 400, message: 'username and password required.'})
+    } else {
+        next()
     }
 }
 
@@ -26,14 +25,6 @@ const usernameCheck = async (req,res,next) =>{
     }
 }
 
-const validateLogin = (req,res,next)=>{
-    const {username,password} = req.body;
-    if(!username || !password){
-        res.status(400).send({message: "username and password required"});
-    }
-    next();
-}
-
 const userNameExists = async (req, res, next) => {
     const { username } = req.body
     const user = await Users.findByUsername((username));
@@ -49,6 +40,5 @@ const userNameExists = async (req, res, next) => {
 module.exports = {
     validate,
     usernameCheck,
-    validateLogin,
     userNameExists
 }

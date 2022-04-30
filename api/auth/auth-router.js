@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Users = require('./user-model')
 const {JWT_SECRET} = require('../../config');
-const {validate,usernameCheck,validateLogin, userNameExists} = require('./../middleware/auth')
+const {validate,usernameCheck, userNameExists} = require('./../middleware/auth')
 
 function generateToken(user) {
   const payload = {
@@ -14,7 +14,7 @@ function generateToken(user) {
   return jwt.sign(payload, JWT_SECRET, options);
 }
 
-router.post('/register', usernameCheck, validate,  async (req, res, next) => {
+router.post('/register', validate, usernameCheck,   async (req, res, next) => {
   const { username, password } = req.body
   const hash = bcrypt.hashSync(password, 8)
   const user = { username, password: hash }
@@ -26,7 +26,7 @@ router.post('/register', usernameCheck, validate,  async (req, res, next) => {
     .catch(next); 
 })
 
-router.post("/login", validateLogin, userNameExists, async (req, res,next) => {
+router.post("/login", validate, userNameExists, async (req, res,next) => {
   let user = req.user;
   let { username,password } = req.body;
   try{
