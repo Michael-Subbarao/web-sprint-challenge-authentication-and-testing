@@ -5,7 +5,6 @@ const validate = (req,res,next) =>{
     const {username,password} = req.body;
     if(!username || !password){
         res.status(400).send({message: 'username and password required.'});
-        res.end();
     }
     else{
         next();
@@ -23,7 +22,7 @@ const usernameCheck = async (req,res,next) =>{
         }
     }
     catch(err){
-        next(err)
+        next(err);
     }
 }
 
@@ -31,7 +30,6 @@ const validateLogin = (req,res,next)=>{
     const {username,password} = req.body;
     if(!username || !password){
         res.status(400).send({message: "username and password required"});
-        res.end();
     }
     next();
 }
