@@ -30,7 +30,7 @@ const usernameCheck = async (req,res,next) =>{
 const validateLogin = (req,res,next)=>{
     const {username,password} = req.body;
     if(!username || !password){
-        res.status(400).send({message: "invalid credentials"});
+        res.status(400).send({message: "username and password required"});
         next();
     }
     next();
