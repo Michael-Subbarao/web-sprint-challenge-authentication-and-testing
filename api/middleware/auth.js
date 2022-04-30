@@ -7,10 +7,6 @@ const validate = (req,res,next) =>{
         res.status(400).send({message: 'Missing username or password.'});
         next();
     }
-    else if(password.length<4){
-        res.status(400).send({message: 'Password must be at least 4 characters.'});
-        next();
-    }
     else{
         next();
     }

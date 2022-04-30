@@ -14,7 +14,7 @@ function generateToken(user) {
   return jwt.sign(payload, JWT_SECRET, options);
 }
 
-router.post('/register', validate, usernameCheck, async (req, res, next) => {
+router.post('/register', usernameCheck, validate,  async (req, res, next) => {
   const { username, password } = req.body
   const hash = bcrypt.hashSync(password, 8)
   const user = { username, password: hash }
