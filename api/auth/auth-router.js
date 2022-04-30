@@ -2,8 +2,8 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Users = require('./user-model')
-const {JWT_SECRET} = require('./../../config');
-const {validate,usernameCheck} = require('./../middleware/auth')
+const JWT_SECRET = 'aaaaaaaaaa';
+const {validate,usernameCheck,validateLogin, userNameExists} = require('./../middleware/auth')
 
 function generateToken(user) {
   const payload = {
@@ -14,11 +14,11 @@ function generateToken(user) {
   return jwt.sign(payload, JWT_SECRET, options);
 }
 
-router.post('/register', validate, usernameCheck, (req, res, next) => {
-  let user = req.body
-  const hash = bcrypt.hashSync(user.password, 6);
-  user.password = hash;
-
+router.post('/register', validate, usernameCheck, async (req, res, next) => {
+  const { username, password } = req.body
+  const hash = bcrypt.hashSync(password, 8)
+  const user = { username, password: hash }
+ 
   Users.add(user)
     .then(saved => {
       res.status(201).json({ message: `Great to have you, ${saved.username}` })
@@ -26,33 +26,25 @@ router.post('/register', validate, usernameCheck, (req, res, next) => {
     .catch(next); 
 })
 
-router.post('/login',  (req, res, next) => {
-//  let { username, password } = req.body;
-//  Users.findBy({ username })
-//    .then(([user]) => {
-//      if (user && bcrypt.compareSync(password, user.password)) {
-//        res.status(200).json({
-//          message: `Welcome, ${user.username}`,
-//          token: generateToken(user)
-//        })
-//      } else {
-//        next({ status: 401, message: 'Username or Password Incorrect' })
-//      }
-//    })
-//    .catch(next)
-  const user = req.user
-  const { password } = req.body
-  const validCreds = bcrypt.compareSync(password, user.password)
-
-  if (validCreds) {
-    res.status(200).json({
-      message: `welcome, ${user.username}`,
-      token: generateToken(user)
-    })
-  } else {
-    next({ status: 401, message: 'Username or Password Incorrect' })
+router.post("/login", validateLogin, userNameExists, async (req, res,next) => {
+  let user = req.user;
+  let { username,password } = req.body;
+  try{
+    if(bcrypt.compareSync(password, user.password))
+    {
+      res.status(200).json({
+        message: `Welcome, ${username}`,
+        token: generateToken(user),
+       });
+    }
+    else {
+      res.status(401).json({ message:'Username or Password Incorrect'});
+    }
   }
-  
-})
+  catch{
+    res.status(401).json({ message:'Something went wrong here'});
+  }
+  next();
+});
 
 module.exports = router;
