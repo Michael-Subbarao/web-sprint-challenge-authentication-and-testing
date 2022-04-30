@@ -21,7 +21,7 @@ router.post('/register', validate, usernameCheck,   async (req, res, next) => {
  
   Users.add(user)
     .then(saved => {
-      res.status(201).json({ message: `Great to have you, ${saved.username}` })
+      res.status(201).json({...saved, message: `Great to have you, ${saved.username}` })
     })
     .catch(next); 
 })
