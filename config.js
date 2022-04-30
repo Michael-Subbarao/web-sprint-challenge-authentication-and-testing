@@ -1,3 +1,3 @@
 module.exports = {
-    jwtSecret: process.env.JWT_SECRET || 'testingHash123aBC'
+    JWT_SECRET: process.env.JWT_SECRET || 'testingHashKey123aBC'
 }

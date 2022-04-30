@@ -2,7 +2,7 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Users = require('./user-model')
-const JWT_SECRET = 'aaaaaaaaaa';
+const {JWT_SECRET} = require('../../config');
 const {validate,usernameCheck,validateLogin, userNameExists} = require('./../middleware/auth')
 
 function generateToken(user) {
